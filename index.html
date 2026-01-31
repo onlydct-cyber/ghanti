@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ghanti 🔔</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      text-align: center;
+      padding-top: 80px;
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🔔 Ghanti</h1>
+  <p>Phone हल्लाउनुहोस्</p>
+
+  <button onclick="enableMotion()">Enable Motion</button>
+
+  <audio id="bell" src="bell.mp3"></audio>
+
+  <script>
+    let lastTime = 0;
+
+    function enableMotion() {
+      if (
+        typeof DeviceMotionEvent !== "undefined" &&
+        typeof DeviceMotionEvent.requestPermission === "function"
+      ) {
+        // iPhone
+        DeviceMotionEvent.requestPermission()
+          .then(permissionState => {
+            if (permissionState === "granted") {
+              window.addEventListener("devicemotion", handleMotion);
+              alert("Motion Enabled");
+            }
+          })
+          .catch(console.error);
+      } else {
+        // Android
+        window.addEventListener("devicemotion", handleMotion);
+        alert("Motion Enabled");
+      }
+    }
+
+    function handleMotion(event) {
+      const acc = event.accelerationIncludingGravity;
+      if (!acc) return;
+
+      const shake =
+        Math.abs(acc.x) +
+        Math.abs(acc.y) +
+        Math.abs(acc.z);
+
+      const now = Date.now();
+
+      if (shake > 25 && now - lastTime > 1000) {
+        document.getElementById("bell").play();
+        lastTime = now;
+      }
+    }
+  </script>
+
+</body>
+</html>
