@@ -2,70 +2,85 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Ghanti 🔔</title>
+  <title>RSP Nepal 🔔</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      background: #111;
-      color: #fff;
+      background: skyblue;
       text-align: center;
-      padding-top: 80px;
+      color: #003049;
+    }
+    .container {
+      padding: 60px 20px;
+    }
+    img {
+      width: 140px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 18px;
+      margin-bottom: 30px;
     }
     button {
+      background: #003049;
+      color: white;
+      border: none;
       padding: 15px 30px;
       font-size: 18px;
-      border: none;
       border-radius: 8px;
       cursor: pointer;
+    }
+    button:hover {
+      background: #001d2a;
     }
   </style>
 </head>
 <body>
 
-  <h1>🔔 Ghanti</h1>
-  <p>Phone हल्लाउनुहोस्</p>
+  <div class="container">
+    <!-- Logo file name: logo.png -->
+    <img src="logo.png" alt="RSP Nepal Ghanti Logo">
 
-  <button onclick="enableMotion()">Enable Motion</button>
+    <h1>RSP Nepal 🔔</h1>
+    <p>Enable Motion अनि phone हल्लाउनुहोस्</p>
 
-  <audio id="bell" src="bell.mp3"></audio>
+    <button onclick="enableMotion()">Enable Ghanti</button>
+
+    <audio id="bell" src="bell.mp3"></audio>
+  </div>
 
   <script>
     let lastTime = 0;
 
     function enableMotion() {
-      if (
-        typeof DeviceMotionEvent !== "undefined" &&
-        typeof DeviceMotionEvent.requestPermission === "function"
-      ) {
-        // iPhone
-        DeviceMotionEvent.requestPermission()
-          .then(permissionState => {
-            if (permissionState === "granted") {
-              window.addEventListener("devicemotion", handleMotion);
-              alert("Motion Enabled");
-            }
-          })
-          .catch(console.error);
+      if (typeof DeviceMotionEvent !== "undefined" &&
+          typeof DeviceMotionEvent.requestPermission === "function") {
+        DeviceMotionEvent.requestPermission().then(response => {
+          if (response === "granted") {
+            window.addEventListener("devicemotion", ringGhanti);
+            alert("Ghanti Enabled 🔔");
+          }
+        });
       } else {
-        // Android
-        window.addEventListener("devicemotion", handleMotion);
-        alert("Motion Enabled");
+        window.addEventListener("devicemotion", ringGhanti);
+        alert("Ghanti Enabled 🔔");
       }
     }
 
-    function handleMotion(event) {
+    function ringGhanti(event) {
       const acc = event.accelerationIncludingGravity;
       if (!acc) return;
 
-      const shake =
-        Math.abs(acc.x) +
-        Math.abs(acc.y) +
-        Math.abs(acc.z);
-
+      const shake = Math.abs(acc.x) + Math.abs(acc.y) + Math.abs(acc.z);
       const now = Date.now();
 
-      if (shake > 25 && now - lastTime > 1000) {
+      if (shake > 25 && now - lastTime > 1200) {
         document.getElementById("bell").play();
         lastTime = now;
       }
